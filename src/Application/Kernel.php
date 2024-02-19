@@ -142,6 +142,15 @@ final readonly class Kernel
                 }
             }
 
+            // Just a test to benchmark vendor parsing.
+            $classMapFile = getcwd() . '/vendor/composer/autoload_classmap.php';
+            $composerAutoloadClasses = array_keys(require $classMapFile);
+
+            foreach ($composerAutoloadClasses as $file) {
+                $reflection = new ReflectionClass($className);
+                $discovery->discover($reflection);
+            }
+
             $discovery->storeCache();
         }
     }
