@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Tempest\Unit\Container;
 
 use PHPUnit\Framework\TestCase;
-use Tempest\Container\GenericContainer;
+use Tempest\Container\TempestContainer;
 use Tests\Tempest\Unit\Container\Fixtures\BuiltinArrayClass;
 use Tests\Tempest\Unit\Container\Fixtures\BuiltinTypesWithDefaultsClass;
 use Tests\Tempest\Unit\Container\Fixtures\CallContainerObjectE;
@@ -34,7 +34,7 @@ class ContainerTest extends TestCase
 {
     public function test_get_with_autowire()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         $b = $container->get(ContainerObjectB::class);
 
@@ -44,7 +44,7 @@ class ContainerTest extends TestCase
 
     public function test_get_with_definition()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         $container->register(
             ContainerObjectC::class,
@@ -58,7 +58,7 @@ class ContainerTest extends TestCase
 
     public function test_get_with_initializer()
     {
-        $container = new GenericContainer(initializers: [
+        $container = new TempestContainer(initializers: [
             ContainerObjectD::class => ContainerObjectDInitializer::class,
         ]);
 
@@ -69,7 +69,7 @@ class ContainerTest extends TestCase
 
     public function test_singleton()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         $container->singleton(SingletonClass::class, fn () => new SingletonClass());
 
@@ -84,7 +84,7 @@ class ContainerTest extends TestCase
 
     public function test_initialize_with_can_initializer()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         $container->addInitializer(ContainerObjectEInitializer::class);
 
@@ -95,7 +95,7 @@ class ContainerTest extends TestCase
 
     public function test_call_tries_to_transform_unmatched_values()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
         $container->addInitializer(ContainerObjectEInitializer::class);
         $classToCall = new CallContainerObjectE();
 
@@ -110,7 +110,7 @@ class ContainerTest extends TestCase
 
     public function test_arrays_are_automatically_created()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         /**
          * @var BuiltinArrayClass $class
@@ -123,7 +123,7 @@ class ContainerTest extends TestCase
 
     public function test_builtin_defaults_are_used()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         /**
          * @var BuiltinTypesWithDefaultsClass $class
@@ -135,7 +135,7 @@ class ContainerTest extends TestCase
 
     public function test_optional_types_resolve_to_null()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         /**
          * @var OptionalTypesClass $class
@@ -147,7 +147,7 @@ class ContainerTest extends TestCase
 
     public function test_union_types_iterate_to_resolution()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
 
         /** @var UnionTypesClass $class */
         $class = $container->get(UnionTypesClass::class);
@@ -158,7 +158,7 @@ class ContainerTest extends TestCase
 
     public function test_singleton_initializers()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
         $container->addInitializer(SingletonInitializer::class);
 
         $a = $container->get(ContainerObjectE::class);
@@ -168,7 +168,7 @@ class ContainerTest extends TestCase
 
     public function test_union_initializers()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
         $container->addInitializer(UnionInitializer::class);
 
         $a = $container->get(UnionInterfaceA::class);
@@ -180,7 +180,7 @@ class ContainerTest extends TestCase
 
     public function test_intersection_initializers()
     {
-        $container = new GenericContainer();
+        $container = new TempestContainer();
         $container->addInitializer(IntersectionInitializer::class);
 
         $a = $container->get(UnionInterfaceA::class);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tempest {
 
     use Tempest\Commands\CommandBus;
-    use Tempest\Container\GenericContainer;
+    use Tempest\Container\TempestContainer;
     use Tempest\Events\EventBus;
     use Tempest\Http\GenericRequest;
     use Tempest\Http\GenericResponse;
@@ -26,7 +26,7 @@ namespace Tempest {
      */
     function get(string $className): object
     {
-        $container = GenericContainer::instance();
+        $container = TempestContainer::instance();
 
         return $container->get($className);
     }

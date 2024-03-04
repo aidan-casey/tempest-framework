@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tempest\Http;
 
 use ReflectionMethod;
+use Tempest\Application\Config;
 
+#[Config]
 final class RouteConfig
 {
     public function __construct(

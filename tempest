@@ -1,10 +1,13 @@
 #!/usr/bin/env php
 <?php
 
+use Tempest\Container\TempestContainer;
 use Tempest\Tempest;
 
 require_once getcwd() . '/vendor/autoload.php';
 
-Tempest::boot(getcwd())->console()->run();
+$container = TempestContainer::getInstance();
+
+Tempest::console(container: $container, path: __DIR__)->run();
 
 exit;

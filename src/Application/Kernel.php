@@ -4,59 +4,17 @@ declare(strict_types=1);
 
 namespace Tempest\Application;
 
-use Tempest\AppConfig;
-use Tempest\Bootstraps\ConfigBootstrap;
-use Tempest\Bootstraps\DiscoveryBootstrap;
-use Tempest\Bootstraps\DiscoveryLocationBootstrap;
 use Tempest\Container\Container;
-use Tempest\Container\GenericContainer;
-use Tempest\Database\PDOInitializer;
-use Tempest\Http\RequestInitializer;
-use Tempest\Http\RouteBindingInitializer;
 
-final readonly class Kernel
+interface Kernel
 {
-    public function __construct(
-        public string $root,
-        private AppConfig $appConfig,
-    ) {
-    }
+    public function getContainer(): Container;
 
-    public function init(): Container
-    {
-        $container = $this->createContainer();
+    public function setContainer(Container $container): void;
 
-        $bootstraps = [
-            DiscoveryLocationBootstrap::class,
-            ConfigBootstrap::class,
-            DiscoveryBootstrap::class,
-        ];
+    public function getPath(): string;
 
-        foreach ($bootstraps as $bootstrap) {
-            $container->get(
-                $bootstrap,
-                kernel: $this,
-                appConfig: $this->appConfig,
-            )->boot();
-        }
+    public function setPath(string $path): void;
 
-        return $container;
-    }
-
-    private function createContainer(): Container
-    {
-        $container = new GenericContainer();
-
-        GenericContainer::setInstance($container);
-
-        $container
-            ->config($this->appConfig)
-            ->singleton(self::class, fn () => $this)
-            ->singleton(Container::class, fn () => $container)
-            ->addInitializer(RequestInitializer::class)
-            ->addInitializer(RouteBindingInitializer::class)
-            ->addInitializer(PDOInitializer::class);
-
-        return $container;
-    }
+    public function run(): void;
 }

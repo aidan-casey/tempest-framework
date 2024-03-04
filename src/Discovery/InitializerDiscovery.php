@@ -6,7 +6,7 @@ namespace Tempest\Discovery;
 
 use ReflectionClass;
 use Tempest\Container\Container;
-use Tempest\Container\GenericContainer;
+use Tempest\Container\TempestContainer;
 use Tempest\Container\Initializer;
 
 final readonly class InitializerDiscovery implements Discovery
@@ -14,7 +14,7 @@ final readonly class InitializerDiscovery implements Discovery
     private const string CACHE_PATH = __DIR__ . '/initializer-discovery.cache.php';
 
     public function __construct(
-        private Container&GenericContainer $container,
+        private Container&TempestContainer $container,
     ) {
     }
 

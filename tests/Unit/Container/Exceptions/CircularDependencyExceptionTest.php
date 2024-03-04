@@ -6,7 +6,7 @@ namespace Tests\Tempest\Unit\Container\Exceptions;
 
 use PHPUnit\Framework\TestCase;
 use Tempest\Container\Exceptions\CircularDependencyException;
-use Tempest\Container\GenericContainer;
+use Tempest\Container\TempestContainer;
 use Tests\Tempest\Unit\Container\Fixtures\CircularA;
 use Tests\Tempest\Unit\Container\Fixtures\CircularZ;
 
@@ -21,7 +21,7 @@ class CircularDependencyExceptionTest extends TestCase
         $this->expectException(CircularDependencyException::class);
 
         try {
-            $container = new GenericContainer();
+            $container = new TempestContainer();
 
             $container->get(CircularA::class);
         } catch (CircularDependencyException $exception) {
@@ -42,7 +42,7 @@ class CircularDependencyExceptionTest extends TestCase
         $this->expectException(CircularDependencyException::class);
 
         try {
-            $container = new GenericContainer();
+            $container = new TempestContainer();
 
             $container->get(CircularZ::class);
         } catch (CircularDependencyException $exception) {

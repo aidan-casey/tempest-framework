@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tempest\Console\Commands;
 
 use Tempest\AppConfig;
-use Tempest\Application\Kernel;
 use Tempest\Console\Console;
 use Tempest\Console\ConsoleCommand;
 use Tempest\Console\ConsoleStyle;
@@ -16,7 +15,6 @@ final readonly class DiscoveryClearCommand
 {
     public function __construct(
         private Container $container,
-        private Kernel $kernel,
         private Console $console,
         private AppConfig $appConfig,
     ) {

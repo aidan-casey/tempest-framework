@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tempest\Console;
 
 use ReflectionMethod;
+use Tempest\Application\Config;
 
+#[Config]
 final class ConsoleConfig
 {
     public function __construct(

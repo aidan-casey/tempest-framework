@@ -6,44 +6,86 @@ namespace Tempest\Application;
 
 use ArgumentCountError;
 use ReflectionMethod;
-use Tempest\AppConfig;
+use Tempest\Bootstraps\ConfigBootstrapper;
+use Tempest\Bootstraps\DiscoveryBootstrapper;
+use Tempest\Bootstraps\EnvironmentBootstrapper;
 use Tempest\Console\ConsoleConfig;
 use Tempest\Console\ConsoleOutput;
 use Tempest\Console\RenderConsoleCommandOverview;
 use Tempest\Container\Container;
-use Throwable;
 
-final readonly class ConsoleApplication implements Application
+final class ConsoleKernel implements Kernel
 {
-    public function __construct(
-        private array $args,
-        private Container $container,
-        private AppConfig $appConfig,
-    ) {
+    private array $args;
+
+    private array $bootstrappers = [
+        EnvironmentBootstrapper::class,
+        DiscoveryBootstrapper::class,
+        ConfigBootstrapper::class,
+    ];
+
+    private bool $hasBooted = false;
+
+    private Container $container;
+
+    private string $path;
+
+    public function __construct(Container $container, string $path)
+    {
+        $this->setContainer($container);
+        $this->setPath($path);
+
+        $this->args = $_SERVER['argv'];
+    }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    public function setContainer(Container $container): void
+    {
+        $this->container = $container;
+
+        $this->container->singleton(Kernel::class, fn () => $this);
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
     }
 
     public function run(): void
     {
-        try {
-            $commandName = $this->args[1] ?? null;
+        $this->boot();
 
-            $output = $this->container->get(ConsoleOutput::class);
+        $commandName = $this->args[1] ?? null;
 
-            if (! $commandName) {
-                $output->writeln($this->container->get(RenderConsoleCommandOverview::class)());
+        $output = $this->container->get(ConsoleOutput::class);
 
-                return;
-            }
+        if (! $commandName) {
+            $output->writeln($this->container->get(RenderConsoleCommandOverview::class)());
 
-            $this->handleCommand($commandName);
-        } catch (Throwable $throwable) {
-            if (! $this->appConfig->enableExceptionHandling) {
-                throw $throwable;
-            }
+            return;
+        }
 
-            foreach ($this->appConfig->exceptionHandlers as $exceptionHandler) {
-                $exceptionHandler->handle($throwable);
-            }
+        $this->handleCommand($commandName);
+    }
+
+    private function boot(): void
+    {
+        if ($this->hasBooted) {
+            return;
+        }
+
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper = new $bootstrapper;
+            $bootstrapper($this);
         }
     }
 

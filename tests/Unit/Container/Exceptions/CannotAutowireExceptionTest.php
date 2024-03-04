@@ -6,7 +6,7 @@ namespace Tests\Tempest\Unit\Container\Exceptions;
 
 use PHPUnit\Framework\TestCase;
 use Tempest\Container\Exceptions\CannotAutowireException;
-use Tempest\Container\GenericContainer;
+use Tempest\Container\TempestContainer;
 use Tests\Tempest\Unit\Container\Fixtures\AutowireA;
 
 /**
@@ -20,7 +20,7 @@ class CannotAutowireExceptionTest extends TestCase
         $this->expectException(CannotAutowireException::class);
 
         try {
-            $container = new GenericContainer();
+            $container = new TempestContainer();
 
             $container->get(AutowireA::class);
         } catch (CannotAutowireException $exception) {

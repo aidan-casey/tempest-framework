@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tempest\Commands;
 
 use ReflectionMethod;
+use Tempest\Application\Config;
 
+#[Config]
 final class CommandBusConfig
 {
     public function __construct(
